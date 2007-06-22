@@ -2,7 +2,7 @@
 dnl ## AM_PATH_DOTCONF([MINIMUM_VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT_FOUND]]])
 dnl ##
 dnl ##
-AC_DEFUN(AM_PATH_DOTCONF,
+AC_DEFUN([AM_PATH_DOTCONF],
 [dnl
 dnl Get the cflags and libs from the dotconf-config script
 dnl
