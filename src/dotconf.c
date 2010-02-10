@@ -994,6 +994,7 @@ int dotconf_handle_question_mark(command_t* cmd, char* path, char* pre, char* ex
 	char* wc_path = 0;
 	char* wc_pre = 0;
 	char* wc_ext = 0;
+	char *temp = NULL;
 
 	int pre_len;
 	int new_path_len;
@@ -1027,11 +1028,13 @@ int dotconf_handle_question_mark(command_t* cmd, char* path, char* pre, char* ex
 
 						if ( new_path_len > alloced )
 						{
-							if ( realloc(new_path,new_path_len) == NULL )
+							temp = realloc(new_path, new_path_len);
+							if ( temp == NULL )
 							{
 								free(new_path);
 								return -1;
 							}
+							new_path = temp;
 
 						}
 
@@ -1129,6 +1132,7 @@ int dotconf_handle_star(command_t* cmd, char* path, char* pre, char* ext)
 	char* wc_path = 0;
 	char* wc_pre = 0;
 	char* wc_ext = 0;
+	char *temp = NULL;
 
 	int pre_len;
 	int new_path_len;
@@ -1185,11 +1189,13 @@ int dotconf_handle_star(command_t* cmd, char* path, char* pre, char* ext)
 
 						if ( new_path_len > alloced )
 						{
-							if ( realloc(new_path,new_path_len) == NULL )
+							temp = realloc(new_path, new_path_len);
+							if ( temp == NULL )
 							{
 								free(new_path);
 								return -1;
 							}
+							new_path = temp;
 
 						}
 
