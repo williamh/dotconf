@@ -1,0 +1,17 @@
+Reading the configuration with NO_INLINE_COMMENTS enabled
+[NoInline] Have 3 args
+	[NoInline] Arg #0: upper case
+	[NoInline] Arg #1: #inline
+	[NoInline] Arg #2: comment
+[NoInline] Have 4 args
+	[NoInline] Arg #0: upper case
+	[NoInline] Arg #1: #
+	[NoInline] Arg #2: inline
+	[NoInline] Arg #3: comment
+
+
+Reading the configuration with NO_INLINE_COMMENTS disabled
+[NoInline] Have 1 args
+	[NoInline] Arg #0: upper case
+[NoInline] Have 1 args
+	[NoInline] Arg #0: upper case

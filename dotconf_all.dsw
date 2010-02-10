@@ -1,0 +1,149 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "dotconf"=".\src\dotconf.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "dotconf_all"=".\dotconf_all.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name dotconf
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name example_caseinsensitive
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name example_context
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name example_errorhandler
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name example_modules
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name example_simple
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "example_caseinsensitive"=".\EXAMPLES\CASEINSENSITIVE\example_caseinsensitive.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name dotconf
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "example_context"=".\EXAMPLES\CONTEXT\example_context.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name dotconf
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libpool
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "example_errorhandler"=".\EXAMPLES\ERRORHANDLER\example_errorhandler.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name dotconf
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "example_modules"=".\EXAMPLES\MODULES\example_modules.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name dotconf
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "example_simple"=".\EXAMPLES\SIMPLE\example_simple.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name dotconf
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "libpool"=".\LIBPOOL\libpool.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+

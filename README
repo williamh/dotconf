@@ -1,0 +1,47 @@
+dot.conf v1.0.9      http://www.azzit.de/dotconf/
+=====================================================================
+
+please refer to the API documentation in the doc/ directory of the
+distribution. for several examples take a look at the pieces in examples/
+
+The new version has a bunch of new features which will simply be
+enumerated below. For the API the doc/dotconf-api.txt
+
+,---
+| Extended Parser
+`-------->
+   - indented comments
+   - comments starting anywhere on the line
+   - line continuation (\-Escaped newline)
+   - escaping (via \)
+   - here documents
+   - substitution of environment variables
+       - both styles of quoting (' and ")
+   - Apache compatible wildcard-matching for Include's         [*new*]
+      (added in v1.0.4, written by Stephen W. Boyer <sboyer@caldera.com>)
+
+    Now the parser is Apache compatible (whoohoo ;) and supports some neat
+    additional features.
+
+,---
+| Extended Core API
+`-------->
+	- each configuration file works in its own environment
+	- context sensitivity framework
+	- new API to allow customization of (almost) everything
+	- module support
+    - some builtin commands (Include, IncludePath)
+
+
+,---
+| Miscellany
+`-------->
+
+    - dotconf-config shell script (as in gtk-config, gnome-config)
+    - dotconf.m4 provides autoconf macros for checking for dot.conf
+
+
+
+This is free software licensed with the GNU Lesser General Public License 2.1.
+  -- lukas schroeder <lukas@azzit.de>
+

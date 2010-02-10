@@ -1,0 +1,469 @@
+
+dot.conf v1.0 - API description
+=====================================================================
+
+
+1.         dot.conf types
+---------------------------------------------------------------------
+1.0.              typedefs
+1.1.              constants
+1.2.              macros
+1.3.              structures
+1.3.1.            configfile_t
+1.3.2.            configoption_t
+1.3.3.            command_t
+
+The API is built around the main data structures
+      configfile_t
+      configoption_t
+and   command_t
+Two other types are context_t and info_t, but these are only typedefs
+from void!
+
+configfile_t is the dotconf 'session' structure building the glue
+between the various API parts. It stores things like the stream,
+current filename or the line currently read. When using dot.conf
+the first thing for the programmer to do is to receive a valid
+configfile_t structure with the ->dotconf_create API call.
+
+1.0. dot.conf's typedefs
+==============================
+
+typedef void        context_t;
+typedef void        info_t;
+
+typedef const char *(*dotconf_callback_t)(command_t *, context_t *);
+                      ^^^^^^^^^^^^^^^^^^
+        the type of function called for each encountered command
+
+typedef int (*dotconf_errorhandler_t)(configfile_t *, int,
+              ^^^^^^^^^^^^^^^^^^^^^^  unsigned long, const char *);
+        the type of the errorhandler callback
+
+typedef const char *(*dotconf_contextchecker_t)(command_t *, unsigned long);
+                      ^^^^^^^^^^^^^^^^^^^^^^^^
+        the type of the contextchecker
+
+
+1.1. dot.conf's constants
+==============================
+
+CFG_BUFSIZE             4096
+     max length of one line
+
+CFG_MAX_OPTION            32
+     max length of an option name
+
+CFG_MAX_VALUE           4064
+     max length of an options value
+
+CFG_MAX_FILENAME         256
+     max length of a filename (used when Include'ing)
+
+CFG_VALUES                16
+      max # of parameters an option can take. if an options
+      gets more than CFG_VALUES paramters, the last one holds
+	  the complete remaining unparsed string is passed
+      in list[CFG_VALUES-1].
+
+CFG_INCLUDEPATH_ENV    "DC_INCLUDEPATH"
+      the name of the environment variable used to find the
+      search path for Include'ed files.
+
+
+
+1.2. dot.conf's macros
+==============================
+
+DOTCONF_CB(__name)
+
+   conveniently declare / define a callback function.
+
+
+FUNC_ERRORHANDLER(__name)
+
+   conveniently declare / define the errorhandler callback
+
+
+
+1.3.1. configfile_t
+==============================
+
+FILE *stream
+	the stream opened by dotconf_create. this field should only be
+	used by dotconf_get_next_line for reading
+
+char eof
+	eof is set to one as soon as the END OF FILE has been reached.
+
+size_t size
+	this field is only used if there was a here-document to be handled.
+	for here-documents dotconf allocates as much memory as the filesize.
+	The result of the necessary stat() call is cached in this field.
+	Do never rely on the value of this field!!
+
+context_t *context
+	the application's pointer to the context memory block. this field
+	is set by dotconf_create, and used to fill in the corresponding
+	field of the command_t when calling a command's callback
+
+configoption_t const **config_options
+	a list of configuration options dotconf's dotconf_handle_command
+	can understand. Never write to this field yourself, use
+	dotconf_register_command to handle this for you.
+
+int config_option_count
+	the number of modules that registered their options including
+	dotconf's internal options and the core options of the app as given
+	to dotconf_create.
+
+char *filename
+	the name of the configuration file
+
+unsigned long line
+	the line pointer in the file currently parsed
+
+unsigned long flags
+	the run-time flags as passed to dotconf_create. this value
+	can be changed at run-time to have dot.conf act different at different
+	stages of the configuration file (i.e. switch case (in)sensitive matching)
+
+char *includepath
+	the include-path for dot.conf's internal 'Include' option.
+	This field is set to the value of the CFG_INCLUDEPATH_ENV environment
+	by dotconf_create
+
+dotconf_errorhandler_t errorhandler
+	the errorhandler of the app; after creating your configfile_t set this
+	field to your errorhandler function or leave it as NULL
+
+dotconf_contextchecker_t contextchecker
+	the contextchecker is responsible for telling dot.conf whether a
+	command is valid in the current context. this callback is useful
+	if you create several container commands that behave different
+	according to their nesting (see Apache's Files, Directory and VirtualHost).
+
+
+int (*cmp_func)(const char *, const char *, size_t)
+	the function used to compare the first word of a buffer line with
+	all commands registered in config_options. this will be set by the core
+	to be strncmp or strncasecmp depending on the matching type you chose
+	via the flags. again, changing this at any point during the parsing
+	will have an immediate effect.
+
+
+
+1.3.2. configoption_t
+==============================
+
+const char *name
+	the name of the configuration option dot.conf should understand
+
+int type
+	the type of the data your app expects. possible values are:
+	ARG_NONE - your app does not expect any args; dot.conf will not parse
+               any args even if some were given.
+	ARG_RAW - unparsed string with whatever was on the line
+              line continuation has been handled, environment variable
+              substitution not.
+	ARG_STR - the first argument (i.e. anything up to the first unquoted,
+              unescaped whitespace character
+	ARG_INT - like ARG_STR, but atoi() is called on the value found
+	ARG_TOGGLE - your app gets 0 for off, and 1 for on; recognized values are
+				 On/Off, 1/0, Yes/No
+	ARG_LIST - the application expects several ARG_STRs in a char **list.
+	ARG_NAME - fallback to catch unknown commands. This is for instance
+               especially useful to parse files like Apache's mime.types.
+               If an ARG_NAME is given as the last item of the command table,
+               dot.conf handles the commands as known, and does everything
+               it would have done for an ARG_LIST option.
+			   Note: Modules cannot install an ARG_NAME handler. That is the
+                     sole right of the core application code.
+
+dotconf_callback_t callback
+	the function to be called if the given command name is encountered
+
+info_t *info
+	additional info for the callback to operate with
+
+unsigned long context
+	the context flag; this will be passed to the apps configchecker
+
+
+
+1.3.3. command_t
+==============================
+
+const char *name
+	the name of the configuration option as in the app's command table.
+	for ARG_NAME type options this is the name of the unmatched/unknown
+	command.
+
+configoption_t *option
+	a pointer to the full entry of the command table that corresponds to
+	the current option
+
+struct {
+	long value;
+	char *str;
+	char **list;
+} data
+	the data found when parsing.
+	data.value - this is used for ARG_INT and ARG_TOGGLE options
+	data.str   - is only used for ARG_STR type options
+	data.list  - list is filled for ARG_LIST and ARG_NAME options
+                 data.list is terminated by a NULL entry
+
+int arg_count
+	only set for ARG_LIST items; this is set to the number of items in
+	data.list. the last item of the list is data.list[arg_count-1].
+
+configfile_t *configfile
+	the dot.conf session currently active
+
+context_t *context
+	the context pointer you passed to dotconf_create when generating your
+	configfile_t *.
+
+
+
+2.         Function Reference
+---------------------------------------------------------------------
+2.1. dotconf_create
+2.2. dotconf_cleanup
+2.3. dotconf_register_options
+2.4. dotconf_command_loop
+2.5. dotconf_command_loop_until_error
+2.6. dotconf_get_next_line
+2.7. dotconf_handle_command
+2.8. dotconf_warning
+
+
+2.1.  dotconf_create
+==============================
+
+configfile_t *dotconf_create(char *filename, const configoption_t *options,
+                             context_t *context, unsigned long flags);
+
+description:
+        dotconf_create returns a pointer to a configfile_t structure after
+        initializing it. The values you pass are stored in it for future
+        reference.
+
+parameters:
+   char *filename
+ 	the filename of the configuration file you want to parse in
+ 	this session. The filename is only read by dot.conf.
+
+   const configoption_t *options
+ 	this parameter lets dot.conf know about the commands you want
+ 	it to understand. The configoption_t's tell dot.conf which
+ 	of your callbacks is responsible for a specific command.
+
+   context_t *context
+ 	in context you can pass a pointer to the structure
+ 	holding anything necessary to keep a context when parsing.
+ 	This pointer is passed to your command callbacks as a field
+ 	in command_t, so you can access it at any time.
+
+   unsigned long flags
+ 	this parameters sets the runtime flags to consider when
+ 	parsing. This controls important core functionality.
+ 	Possible flags are :
+ 		NONE :
+ 			no flags (0)
+ 		CASE_INSENSITIVE :
+ 			match option names case insensitive
+ 		DONT_SUBSTITUTE :
+ 			do not call substitute_env after read_arg
+                NO_INLINE_COMMENTS :
+			do not stop parsing arguments after a #-sign on a line
+ 		DUPLICATE_OPTION_NAMES :
+ 			allow for duplicate option names in different contexts
+ 			The first one without an error from the contextchecker
+ 			is used.
+
+return value:
+	configfile_t *
+        the dot.conf session structure, which is to be used in every
+        call to another dot.conf API function. NULL is returned in case of a failure
+
+sideeffects:
+        the returned configfile_t* is malloc()ed, and the field 'stream' is
+        fopen()ed. Do not clean this by hand, but use dotconf_cleanup instead.
+
+
+
+2.2.  dotconf_cleanup
+==============================
+
+void dotconf_cleanup(configfile_t *configfile);
+
+description:
+	dotconf_cleanup cleans up behind whatever dotconf_create and friends
+		did to and with the configfile_t* that is given as the argument.
+
+parameters:
+	configfile_t *configfile
+	the dot.conf session structure as returned by dotconf_create.
+
+return value:
+	void
+
+
+
+2.3.  dotconf_register_options
+==============================
+
+void dotconf_register_options(configfile_t *configfile,
+                              const configoption_t *options);
+
+description:
+	this function registers additional known configuration commands at
+	runtime. the next time dot.conf needs to match an option, these
+	newly registered options are taken into account.
+
+parameters:
+	configfile_t *configfile
+	the dot.conf session structure as returned by dotconf_create
+
+	const configoption_t *options
+ 	this parameter lets dot.conf know about the commands you want
+ 	it to understand. The configoption_t's tell dot.conf which
+ 	of your callbacks is responsible for a specific command.
+
+return value:
+	void
+
+
+2.4.  dotconf_command_loop
+==============================
+
+int dotconf_command_loop(configfile_t *configfile);
+
+description:
+	this function iterates through all lines of the configuration file
+	passing the buffer filled by dotconf_get_next_line to
+	dotconf_handle_command. On error dotconf_command_loop calls
+	dotconf_warning.
+
+parameters:
+	configfile_t *configfile
+	the dot.conf session structure as returned by dotconf_create
+
+return value:
+	int
+	dotconf_command_loop returns zero on failure and non-zero for success.
+	success means, that the parsing is done now.
+
+
+2.5.  dotconf_command_loop_until_error
+==============================
+
+int dotconf_command_loop_until_error(configfile_t *configfile);
+
+description:
+	this function iterates through all lines of the configuration file
+	passing the buffer filled by dotconf_get_next_line to
+	dotconf_handle_command. On error this function exits returning the
+	error.
+
+parameters:
+	configfile_t *configfile
+	the dot.conf session structure as returned by dotconf_create
+
+return value:
+	const char *
+	dotconf_command_loop_until error returns the first error it stumbles over
+	or NULL if everything went fine
+
+
+2.6.  dotconf_get_next_line
+==============================
+
+int dotconf_get_next_line(char *buffer,
+						  size_t bufsize, configfile_t *configfile);
+
+description:
+	this function reads the next line from the configfile, increments
+	line counter, and handles the line continuation.
+
+parameters:
+	char *buffer
+	the buffer where the line should be written to
+
+	size_t bufsize
+	the size of the buffer
+
+	configfile_t *configfile
+	the dot.conf session structure as returned by dotconf_create
+
+return value:
+	int
+	zero indicates success, and non-zero means that some error occurred
+
+
+2.7.  dotconf_handle_command
+==============================
+
+const char *dotconf_handle_command(configfile_t *configfile, char *buffer);
+
+description:
+	handles commands. This function further parses the line buffer and
+	tries to match up the first word found as the command. If the command
+	exists it parses all commands arguments and stuffs them into a
+	command_t structure. Where appropriate here-documents or quotings are
+	handled, and the environment variable substitution is tried on every
+	ARG_STR / ARG_LIST command argument except here-documents.
+
+parameters:
+	configfile_t *configfile
+	the dot.conf session structure as returned by dotconf_create
+
+	char *buffer
+	the buffer as filled by dotconf_get_next_line
+
+return value:
+	const char *
+	the error message as returned by the command callbacks for instance;
+	NULL if everything went ok.
+
+
+2.8.  dotconf_warning
+==============================
+
+int dotconf_warning(configfile_t *configfile,
+					int type, unsigned long errnum, const char *fmt, ...);
+
+description:
+	dotconf_warning is responsible for dispatching any messages either
+	through the internal handler (i.e. fprintf) or through the app's
+	errorhandler.
+
+parameters:
+	configfile_t *configfile
+	the dot.conf session structure as returned by dotconf_create
+
+	int type
+	type of the message; analogous to syslog-style types:
+	DCLOG_EMERG, DCLOG_ALERT, DCLOG_CRIT, DCLOG_ERR, DCLOG_WARNING,
+	DCLOG_NOTICE, DCLOG_INFO, DCLOG_DEBUG
+
+	unsigned long errnum
+	the error number. this is up to the app what values to put here.
+	I suggest using numbers above ERR_USER for own error numbers to
+	not be conflicting with dotconf's internal error numbers.
+
+	const char *fmt, ...
+	a printf style message format. the message will be prepared via
+	vsnprintf before passing it to your errorhandler.
+
+return value:
+	int
+	the value returned here affects how dotconf_command_loop reacts to errors.
+	a value of zero, which is returned by the internal handler, will
+	make the command loop to read on. non-zero tells the loop to immediately
+	exit after printing the error.
+
+
+

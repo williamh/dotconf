@@ -1,0 +1,15 @@
+Fallback handler called for "UnknownOption". Got 5 args
+	Arg #0: these
+	Arg #1: are
+	Arg #2: handled
+	Arg #3: like
+	Arg #4: ARG_LIST!
+Fallback handler called for "Foo". Got 2 args
+	Arg #0: test
+	Arg #1: test2
+Fallback handler called for "Bar". Got 2 args
+	Arg #0: abcd
+	Arg #1: efgh
+Fallback handler called for "Baz". Got 2 args
+	Arg #0: lala
+	Arg #1: alal

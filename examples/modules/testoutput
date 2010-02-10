@@ -1,0 +1,20 @@
+sample.conf:2: UNKNOWN [BlahBlah]
+sample.conf:7: ExampleOption: [arg=SomeValue]
+sample.conf:12: ExampleOption: [arg=/test]
+sample.conf:14: ExampleOption: [arg=lukas]
+sample.conf:16: ExampleOption: [arg=case insensitive matching is optional]
+include.conf:1: ExampleOption: [arg=some included quoted value]
+include.conf:2: ExampleOption: [arg=differently quoted string]
+include.conf:3: ExampleOption: [arg=some bla'blah']
+sample.conf:23: [MoreArgs] Arg #1 'argument1'
+sample.conf:23: [MoreArgs] Arg #2 'argument2'
+sample.conf:25: [MoreArgs] Arg #1 'tabbed'
+sample.conf:25: [MoreArgs] Arg #2 'spaced'
+sample.conf:25: [MoreArgs] Arg #3 'and'
+sample.conf:25: [MoreArgs] Arg #4 'even'
+sample.conf:25: [MoreArgs] Arg #5 'more'
+Module my_module successfully loaded
+sample.conf:35: [MultiLine - START] -   some
+raw multiline
+      data- [MultiLine - END]
+[MODULE] Line 38: NewOption: hello

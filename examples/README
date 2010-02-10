@@ -1,0 +1,19 @@
+
+these example rely on dot.conf and libpool being already installed
+on your system - otherwise you'll probably have to fiddle around
+with the makefiles.
+
+to build, simply cd into the example's directory and type
+$ make
+
+for everything that remains unclear you may consult the documentation,
+or contact me at    <lukas@azzit.de>
+
+
+the duplicates/ example has been provided by Joost Remijn to show what you can
+do with his DUPLICATE_OPTION_NAME feature. You need at least dot.conf 1.0.9 to
+use it.
+
+
+enjoy.
+

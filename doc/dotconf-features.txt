@@ -1,0 +1,29 @@
+dot.conf v1.0.0      http://www.azzit.de/dotconf/
+=====================================================================
+
+Builtin Commands
+================
+    dot.conf natively has the ability to 'Include' additional configuration
+    files that can be found
+      - relative to the current working directory,
+      - relative to some include path, which can be set using the option
+    	  'IncludePath' or the environment variable DC_INCLUDEPATH
+      - at a fully qualified position (starting with a / )
+
+Here Documents
+===============
+    dot.conf also supports so-called 'here-documents' as known from
+    the shell or from PERL. this feature can be used for ARG_STR type
+    options. a here-document is initiated by <<DELIMITER and finished by
+    DELIMITER itself on a line. The last newline is stripped of the
+    resulting string.
+
+Environmentvariable Substitution
+=================================
+   dot.conf supports substitution of environment variables including
+   default substitution, if the env-var is not set.
+   Substitution goes like this: ${NAME:-default}
+
+
+  -- lukas schröder <lukas@azzit.de>
+

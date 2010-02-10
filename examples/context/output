@@ -1,0 +1,12 @@
+[error] Option 'SomeOption' not allowed in <global> context
+[error] Option 'OtherOption' not allowed in <global> context
+[error] Option 'Hybrid' not allowed in <global> context
+[error] Option 'OtherOption' not allowed in <SomeSection> context
+[error] Option 'RootOption' not allowed in <SomeSection> context
+[error] Option 'SomeOption' not allowed in <OtherSection> context
+[error] Option 'RootOption' not allowed in <OtherSection> context
+Option RootOption called
+Option SomeOption called
+Option Hybrid called
+Option OtherOption called
+Option Hybrid called

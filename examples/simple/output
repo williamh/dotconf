@@ -1,0 +1,9 @@
+simple.conf:2: ExampleList: [  (0) "line1  (1) line2skdfj  ]
+simple.conf:7: ExampleStr: [line 1
+line 2]
+included.conf:1: ExampleStr: [test]
+included.conf:2: ExampleList: [  (0) arg0  (1) arg1  (2) arg2  ]
+included.conf:3: ExampleStr: [multiple words here]
+included.conf:4: ExampleStr: [multiple again]
+included.conf:5: ExampleStr: [multi with quote " inside of quote "]
+included.conf:6: ExampleStr: [multi with quote " inside of escaped quote "]
