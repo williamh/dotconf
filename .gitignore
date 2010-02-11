@@ -2,3 +2,5 @@ Makefile.in
 configure
 config.h.in
 dotconf.spec
+missing
+aclocal.m4
