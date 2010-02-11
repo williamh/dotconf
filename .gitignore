@@ -3,3 +3,5 @@ aclocal.m4
 configure
 config.h.in
 dotconf.spec
+missing
+aclocal.m4
