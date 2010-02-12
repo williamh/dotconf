@@ -5,3 +5,8 @@ config.h.in
 dotconf.spec
 missing
 aclocal.m4
+config.guess
+config.sub
+ltmain.sh
+depcomp
+install-sh
