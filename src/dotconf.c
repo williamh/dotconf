@@ -1035,6 +1035,7 @@ int dotconf_handle_question_mark(command_t* cmd, char* path, char* pre, char* ex
 								return -1;
 							}
 							new_path = temp;
+							alloced = new_path_len;
 
 						}
 
@@ -1196,6 +1197,7 @@ int dotconf_handle_star(command_t* cmd, char* path, char* pre, char* ext)
 								return -1;
 							}
 							new_path = temp;
+							alloced = new_path_len;
 
 						}
 
