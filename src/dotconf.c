@@ -725,6 +725,9 @@ configfile_t *dotconf_create(char *fname, const configoption_t * options,
 	}
 
 	new = calloc(1, sizeof(configfile_t));
+	if (!new)
+		return NULL;
+
 	if (!(new->stream = fopen(fname, "r")))
 	{
 		fprintf(stderr, "Error opening configuration file '%s'\n", fname);
@@ -734,8 +737,18 @@ configfile_t *dotconf_create(char *fname, const configoption_t * options,
 
 	new->flags = flags;
 	new->filename = strdup(fname);
+	if(!new->filename) {
+		free(new);
+		return NULL;
+	}
 
 	new->includepath = malloc(CFG_MAX_FILENAME);
+	if (!new->includepath) {
+		free(new->filename);
+		free(new);
+		return NULL;
+	}
+
 	new->includepath[0] = 0x00;
 
 	/* take includepath from environment if present */
