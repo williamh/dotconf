@@ -315,7 +315,7 @@ return value:
 2.3.  dotconf_register_options
 ==============================
 
-void dotconf_register_options(configfile_t *configfile,
+int dotconf_register_options(configfile_t *configfile,
                               const configoption_t *options);
 
 description:
@@ -333,7 +333,11 @@ parameters:
  	of your callbacks is responsible for a specific command.
 
 return value:
-	void
+	int
+	dotconf_register_options returns non-zero on success and zero
+	on failure.  The only possible failure condition is the failure
+	to allocate memory.  
+	If the function fails, configfile is untouched.
 
 
 2.4.  dotconf_command_loop

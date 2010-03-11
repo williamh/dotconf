@@ -216,7 +216,7 @@ char *dotconf_read_arg(configfile_t *configfile, signed char **line);
 const char *dotconf_handle_command(configfile_t *configfile, char *buffer);
 
 /* ------ dotconf_register_option() - add a new option table to the list of commands ------------ */
-void dotconf_register_options(configfile_t *configfile, const configoption_t *options);
+int dotconf_register_options(configfile_t *configfile, const configoption_t *options);
 
 /* ------ dotconf_warning() - handle the dispatch of error messages of various levels ----------- */
 int dotconf_warning(configfile_t *configfile, int level, unsigned long errnum, const char *, ...);

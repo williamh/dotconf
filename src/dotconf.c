@@ -213,28 +213,37 @@ int dotconf_warning(configfile_t *configfile, int type, unsigned long errnum, co
 	return retval;
 }
 
-void dotconf_register_options(configfile_t *configfile, const configoption_t * options)
+int dotconf_register_options(configfile_t *configfile, const configoption_t * options)
 {
 	int num = configfile->config_option_count;
+	int ret = 0;
+	void *temp = configfile->config_options;
 
 #define GROW_BY   10
 
 	/* resize memoryblock for options blockwise */
-	if (configfile->config_options == NULL)
-		configfile->config_options = malloc(sizeof(void *) * (GROW_BY + 1));
+	if (temp == NULL)
+		temp = malloc(sizeof(void *) * (GROW_BY + 1));
 	else
 	{
 		if ( !(num % GROW_BY) )
-			configfile->config_options = realloc(configfile->config_options,
+			temp = realloc(temp,
 											 sizeof(void *) * (num + GROW_BY + 1));
 	}
 
 #undef GROW_BY
 
-	/* append new options */
-	configfile->config_options[configfile->config_option_count] = options;
-	configfile->config_options[ ++configfile->config_option_count ] = 0;
+	if (temp != NULL)
+	{
+		/* Allocation or reallocation was successful. */
+		/* append new options */
+		temp[configfile->config_option_count] = options;
+		configfile->config_options = temp;
+		configfile->config_options[ ++configfile->config_option_count ] = 0;
+		ret = 1;
+	}
 
+	return ret;
 }
 
 void dotconf_callback(configfile_t *configfile, callback_types type, dotconf_callback_t callback)
