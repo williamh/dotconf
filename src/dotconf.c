@@ -217,18 +217,18 @@ int dotconf_register_options(configfile_t *configfile, const configoption_t * op
 {
 	int num = configfile->config_option_count;
 	int ret = 0;
-	void *temp = configfile->config_options;
+	configoption_t const **temp = configfile->config_options;
 
 #define GROW_BY   10
 
 	/* resize memoryblock for options blockwise */
 	if (temp == NULL)
-		temp = malloc(sizeof(void *) * (GROW_BY + 1));
+		temp = malloc(sizeof(configoption_t *) * (GROW_BY + 1));
 	else
 	{
 		if ( !(num % GROW_BY) )
 			temp = realloc(temp,
-											 sizeof(void *) * (num + GROW_BY + 1));
+											 sizeof(configoption_t *) * (num + GROW_BY + 1));
 	}
 
 #undef GROW_BY
