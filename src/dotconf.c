@@ -721,62 +721,6 @@ int dotconf_command_loop(configfile_t *configfile)
 	return 1;
 }
 
-configfile_t *dotconf_create(char *fname, const configoption_t * options,
-                             context_t *context, unsigned long flags)
-{
-	configfile_t *new = 0;
-	char *dc_env;
-
-	if (access(fname, R_OK))
-	{
-		fprintf(stderr, "Error opening configuration file '%s'\n", fname);
-		return NULL;
-	}
-
-	new = calloc(1, sizeof(configfile_t));
-	if (!new)
-		return NULL;
-
-	if (!(new->stream = fopen(fname, "r")))
-	{
-		fprintf(stderr, "Error opening configuration file '%s'\n", fname);
-		free(new);
-		return NULL;
-	}
-
-	new->flags = flags;
-	new->filename = strdup(fname);
-	if(!new->filename) {
-		free(new);
-		return NULL;
-	}
-
-	new->includepath = malloc(CFG_MAX_FILENAME);
-	if (!new->includepath) {
-		free(new->filename);
-		free(new);
-		return NULL;
-	}
-
-	new->includepath[0] = 0x00;
-
-	/* take includepath from environment if present */
-	if ((dc_env = getenv(CFG_INCLUDEPATH_ENV)) != NULL)
-		snprintf(new->includepath, CFG_MAX_FILENAME, "%s", dc_env);
-
-	new->context = context;
-
-	dotconf_register_options(new, dotconf_options);
-	dotconf_register_options(new, options);
-
-	if ( new->flags & CASE_INSENSITIVE )
-		new->cmp_func = strncasecmp;
-	else
-		new->cmp_func = strncmp;
-
-	return new;
-}
-
 void dotconf_cleanup(configfile_t *configfile)
 {
 	if (configfile->stream)
@@ -792,6 +736,72 @@ void dotconf_cleanup(configfile_t *configfile)
 		free(configfile->includepath);
 
 	free(configfile);
+}
+
+configfile_t *dotconf_create(char *fname, const configoption_t * options,
+                             context_t *context, unsigned long flags)
+{
+	char *dc_env = NULL;
+	int registered = 0;
+	configfile_t *new_cfg = calloc(1, sizeof(configfile_t));
+
+	if (!new_cfg)
+		return NULL;
+
+	/*
+	 * From here on, we can use dotconf_cleanup to free resources
+	 * when errors occur.  All of our pointers are NULL, because
+	 * we allocated with calloc.  When an error occurs, dotconf_cleanup
+	 * will free all of the resources that were allocated prior to the
+	 * error.
+	 */
+
+	new_cfg->context = context;
+	new_cfg->flags = flags;
+	if ( new_cfg->flags & CASE_INSENSITIVE )
+		new_cfg->cmp_func = strncasecmp;
+	else
+		new_cfg->cmp_func = strncmp;
+
+	new_cfg->stream = fopen(fname, "r");
+	if (new_cfg->stream == NULL) {
+		fprintf(stderr, "Error opening configuration file '%s'\n", fname);
+		dotconf_cleanup(new_cfg);
+		return NULL;
+	}
+
+	registered = dotconf_register_options(new_cfg, dotconf_options);
+	if (!registered) {
+		dotconf_cleanup(new_cfg);
+		return NULL;
+	}
+
+	registered = dotconf_register_options(new_cfg, options);
+	if (!registered) {
+		dotconf_cleanup(new_cfg);
+		return NULL;
+	}
+
+	new_cfg->filename = strdup(fname);
+	if(!new_cfg->filename) {
+		dotconf_cleanup(new_cfg);
+		return NULL;
+	}
+
+	new_cfg->includepath = malloc(CFG_MAX_FILENAME);
+	if (!new_cfg->includepath) {
+		dotconf_cleanup(new_cfg);
+		return NULL;
+	}
+
+	new_cfg->includepath[0] = 0x00;
+
+	/* take includepath from environment if present */
+	dc_env = getenv(CFG_INCLUDEPATH_ENV);
+	if (dc_env != NULL)
+		snprintf(new_cfg->includepath, CFG_MAX_FILENAME, "%s", dc_env);
+
+	return new_cfg;
 }
 
 /* ------ internal utility function that verifies if a character is in the WILDCARDS list -- */
