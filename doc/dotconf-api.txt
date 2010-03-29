@@ -364,7 +364,7 @@ return value:
 2.5.  dotconf_command_loop_until_error
 ==============================
 
-int dotconf_command_loop_until_error(configfile_t *configfile);
+const char *dotconf_command_loop_until_error(configfile_t *configfile);
 
 description:
 	this function iterates through all lines of the configuration file
