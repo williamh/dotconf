@@ -1,59 +1,68 @@
-AC_INIT(src)
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
 
-# Making releases:
-#   DOTCONF_MICRO_VERSION += 1;
-#   DOTCONF_INTERFACE_AGE += 1;
-#   DOTCONF_BINARY_AGE    += 1;
-# if any function have been added, set DOTCONF_INTERFACE_AGE to 0.
-# if backwards compatibility has been broken,
-# set DOTCONF_BINARY_AGE and DOTCONF_INTERFACE_AGE to 0.
+AC_PREREQ([2.63])
+AC_INIT([dotconf], [1.1.0], [w.d.hubbs@gmail.com])
+AM_INIT_AUTOMAKE([foreign])
+LT_PREREQ([2.2])
+LT_INIT([dlopen])
+AC_CONFIG_SRCDIR([src/dotconf.c])
+AC_CONFIG_HEADERS([config.h])
+
+# Version definition for dotconf-config, must match the version
+# in the AC_INIT call
+DOTCONF_VERSION=1.1.0
+AC_SUBST([DOTCONF_VERSION])
+
+# libtool version numbers:
 #
-DOTCONF_MAJOR_VERSION=1
-DOTCONF_MINOR_VERSION=1
-DOTCONF_MICRO_VERSION=0
-DOTCONF_INTERFACE_AGE=0
-DOTCONF_BINARY_AGE=0
-DOTCONF_VERSION=$DOTCONF_MAJOR_VERSION.$DOTCONF_MINOR_VERSION.$DOTCONF_MICRO_VERSION
+# This is taken from the libtool manual.
+# It is an algorithm, so follow all of the steps.
+#
+# 1. start with 0:0:0 for the first release.
+# 2. Only change this as the last step before a release.
+# 3. If the library source has changed since the last release,
+# increment revision.
+# 4. If any interfaces have been added, removed or changed since the
+# last release, increment current and set revision to 0.
+# 5. If any interfaces have been added since the last release, increment age.
+# 6. If any interfaces have been removed since the last release, set age to 0.
+#
+DC_CURRENT=0
+DC_REVISION=0
+DC_AGE=0
+AC_SUBST([DC_CURRENT])
+AC_SUBST([DC_REVISION])
+AC_SUBST([DC_AGE])
 
-AC_SUBST(DOTCONF_MAJOR_VERSION)
-AC_SUBST(DOTCONF_MINOR_VERSION)
-AC_SUBST(DOTCONF_MICRO_VERSION)
-AC_SUBST(DOTCONF_INTERFACE_AGE)
-AC_SUBST(DOTCONF_BINARY_AGE)
-AC_SUBST(DOTCONF_VERSION)
-
-# libtool versioning
-LT_CURRENT=`expr $DOTCONF_MICRO_VERSION - $DOTCONF_INTERFACE_AGE`
-LT_REVISION=$DOTCONF_INTERFACE_AGE
-LT_AGE=`expr $DOTCONF_BINARY_AGE - $DOTCONF_INTERFACE_AGE`
-AC_SUBST(LT_CURRENT)
-AC_SUBST(LT_REVISION)
-AC_SUBST(LT_AGE)
-
-AM_INIT_AUTOMAKE(dotconf, 1.1.0)
-AM_CONFIG_HEADER(config.h)
-
-AC_CANONICAL_HOST
+# Checks for programs.
 AC_PROG_CC
-AM_PROG_LIBTOOL
+AC_PROG_MAKE_SET
 
-AM_MAINTAINER_MODE
+# Checks for libraries.
+AC_CHECK_LIB([dl], [dlopen])
 
-# Honor aclocal flags
-ACLOCAL="$ACLOCAL $ACLOCAL_FLAGS"
+# Checks for header files.
+AC_CHECK_HEADERS([fcntl.h malloc.h stdlib.h string.h strings.h syslog.h unistd.h])
 
-AC_ADD_INCLUDE(libpool)
-CFLAGS="$CFLAGS $INCLUDES -Wall -g"
+# Checks for typedefs, structures, and compiler characteristics.
+AC_TYPE_OFF_T
+AC_TYPE_SIZE_T
 
-AC_OUTPUT([
-Makefile
-libpool/Makefile
-src/Makefile
-doc/Makefile
-dotconf-config
-dotconf.spec
-dotconf.pc
-])
+# Checks for library functions.
+AC_FUNC_MALLOC
+AC_FUNC_REALLOC
+AC_FUNC_STRTOD
+AC_CHECK_FUNCS([memset strcspn strdup strstr])
+
+AC_CONFIG_FILES([Makefile
+                 doc/Makefile
+                 libpool/Makefile
+                 src/Makefile
+                 dotconf-config
+                 dotconf.pc
+                 dotconf.spec])
+AC_OUTPUT
 
 echo
 echo

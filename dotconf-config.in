@@ -35,7 +35,7 @@ while test $# -gt 0; do
       echo_prefix=yes
       ;;
     --version)
-      echo @DOTCONF_MAJOR_VERSION@.@DOTCONF_MINOR_VERSION@.@DOTCONF_MICRO_VERSION@
+      echo @DOTCONF_VERSION@
       ;;
     --cflags)
       echo_cflags=yes
