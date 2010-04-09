@@ -10,5 +10,3 @@ libdotconf_la_LDFLAGS = \
 	-release $(LT_RELEASE) \
 	-export-dynamic
 
-EXTRA_DIST = dotconf.dsp
-
