@@ -12,7 +12,6 @@ Options:
 	[--version]
 	[--cflags]
 	[--libs]
-	[--pool]
 EOF
 	exit $1
 }
@@ -43,9 +42,6 @@ while test $# -gt 0; do
     --libs)
       echo_libs=yes
       ;;
-    --pool)
-      echo_pool=yes
-      ;;
     *)
       usage 1 1>&2
       ;;
@@ -69,7 +65,4 @@ if test "$echo_libs" = "yes"; then
       echo $libdirs -ldotconf
 fi
 
-if test "$echo_pool" = "yes"; then
-	echo @libdir@/libpool.a
-fi
 
