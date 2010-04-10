@@ -1,4 +1,4 @@
-SUBDIRS = libpool src doc
+SUBDIRS = src doc
 
 bin_SCRIPTS = dotconf-config
 
@@ -8,5 +8,5 @@ m4data_DATA = dotconf.m4
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = dotconf.pc
 
-EXTRA_DIST = bootstrap.sh $(m4data_DATA) $(pkgconfig_DATA).in \
+EXTRA_DIST = $(m4data_DATA) $(pkgconfig_DATA).in \
 	     dotconf.spec examples

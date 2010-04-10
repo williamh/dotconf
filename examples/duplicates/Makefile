@@ -1,10 +1,10 @@
 CFLAGS=-Wall -O2 -g
 LDFLAGS=
-LIBS=-ldotconf -lpool -ldl
+LIBS=-ldotconf ../libpool/libpool.a -ldl
 CC=gcc
 
 %.o: %.c
-	$(CC) $(CFLAGS) -o $@ -c $<
+	$(CC) $(CFLAGS) -I../libpool -o $@ -c $<
 
 all: duplicate first_module.so second_module.so
 

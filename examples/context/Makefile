@@ -4,11 +4,11 @@ OBJS=context.o
 #######################
 CFLAGS=-Wall -O2
 LDFLAGS=
-LIBS=`dotconf-config --libs --pool`
+LIBS=`dotconf-config --libs` ../libpool/libpool.a
 CC=gcc
 
 %.o: %.c
-	$(CC) $(CFLAGS) -o $@ -c $<
+	$(CC) $(CFLAGS) -I../libpool -o $@ -c $<
 
 all: $(TARGET)
 
