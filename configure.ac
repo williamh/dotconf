@@ -9,12 +9,7 @@ LT_INIT([dlopen])
 AC_CONFIG_SRCDIR([src/dotconf.c])
 AC_CONFIG_HEADERS([config.h])
 
-# Version definition for dotconf-config, must match the version
-# in the AC_INIT call
-DOTCONF_VERSION=1.1.0
-AC_SUBST([DOTCONF_VERSION])
-
-# libtool version numbers:
+# libtool version numbers for dotconf library:
 #
 # This is taken from the libtool manual.
 # It is an algorithm, so follow all of the steps.
@@ -40,7 +35,7 @@ AC_PROG_CC
 AC_PROG_MAKE_SET
 
 # Checks for libraries.
-AC_CHECK_LIB([dl], [dlopen])
+AC_SEARCH_LIBS([dlopen], [dl])
 
 # Checks for header files.
 AC_CHECK_HEADERS([fcntl.h malloc.h stdlib.h string.h strings.h syslog.h unistd.h])
@@ -58,7 +53,6 @@ AC_CHECK_FUNCS([memset strcspn strdup strstr])
 AC_CONFIG_FILES([Makefile
                  doc/Makefile
                  src/Makefile
-                 dotconf-config
                  dotconf.pc
                  dotconf.spec])
 AC_OUTPUT
