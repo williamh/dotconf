@@ -64,7 +64,8 @@ typedef unsigned long ulong;
 #endif /* !WIN32 */
 
 #include <ctype.h>
-#include "./dotconf.h"
+#include "dotconf.h"
+#include "dotconf_priv.h"
 
 #ifndef MIN
 #define MIN(a,b) ((a)<(b)?(a):(b))

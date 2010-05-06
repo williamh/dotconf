@@ -233,40 +233,6 @@ extern "C" {
 /* ------ dotconf_substitute_env() - handle the substitution on environment variables ----------- */
 	char *dotconf_substitute_env(configfile_t *, char *);
 
-/* ------ internal utility function that verifies if a character is in the WILDCARDS list -- */
-	int dotconf_is_wild_card(char value);
-
-/* ------ internal utility function that calls the appropriate routine for the wildcard passed in -- */
-	int dotconf_handle_wild_card(command_t * cmd, char wild_card,
-				     char *path, char *pre, char *ext);
-
-/* ------ internal utility function that frees allocated memory from dotcont_find_wild_card -- */
-	void dotconf_wild_card_cleanup(char *path, char *pre);
-
-/* ------ internal utility function to check for wild cards in file path -- */
-/* ------ path and pre must be freed by the developer ( dotconf_wild_card_cleanup) -- */
-	int dotconf_find_wild_card(char *filename, char *wildcard, char **path,
-				   char **pre, char **ext);
-
-/* ------ internal utility function that compares two stings from back to front -- */
-	int dotconf_strcmp_from_back(const char *s1, const char *s2);
-
-/* ------ internal utility function that determins if a string matches the '?' criteria -- */
-	int dotconf_question_mark_match(char *dir_name, char *pre, char *ext);
-
-/* ------ internal utility function that determins if a string matches the '*' criteria -- */
-	int dotconf_star_match(char *dir_name, char *pre, char *ext);
-
-/* ------ internal utility function that determins matches for filenames with   -- */
-/* ------ a '?' in name and calls the Internal Include function on that filename -- */
-	int dotconf_handle_question_mark(command_t * cmd, char *path, char *pre,
-					 char *ext);
-
-/* ------ internal utility function that determins matches for filenames with   -- */
-/* ------ a '*' in name and calls the Internal Include function on that filename -- */
-	int dotconf_handle_star(command_t * cmd, char *path, char *pre,
-				char *ext);
-
 #ifdef __cplusplus
 }				/* extern "C" */
 #endif
