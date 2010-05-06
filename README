@@ -4,8 +4,6 @@ This file lists changes that break backward compatibility with previous
 versions.  Please see the files in the doc directory of the distribution for
 full details.
 
-For examples of how to use this library, see the examples directory.
-
 Changes after 1.0.13:
 
 - dotconf_register_options now has a return type.  This function can now
@@ -18,8 +16,7 @@ This is free software licensed with the GNU Lesser General Public License 2.1.
 
 I would like to thank Lukas Schroeder for authoring this project originally.
 His address is listed in the Authors file if you need to contact him.
-However, current questions about the project should be directed to me since I
-am the current maintainer.  I hope you find this library useful.
+I hope you find this library useful.
 
 William Hubbs <w.d.hubbs@gmail.com>
 
