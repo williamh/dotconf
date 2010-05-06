@@ -1,5 +1,5 @@
 
-dot.conf v1.0 - API description
+dot.conf API description
 =====================================================================
 
 
@@ -62,7 +62,7 @@ CFG_MAX_FILENAME         256
 
 CFG_VALUES                16
       max # of parameters an option can take. if an options
-      gets more than CFG_VALUES paramters, the last one holds
+      gets more than CFG_VALUES parameters, the last one holds
 	  the complete remaining unparsed string is passed
       in list[CFG_VALUES-1].
 
@@ -207,12 +207,14 @@ struct {
 	long value;
 	char *str;
 	char **list;
+	double dvalue;
 } data
 	the data found when parsing.
 	data.value - this is used for ARG_INT and ARG_TOGGLE options
 	data.str   - is only used for ARG_STR type options
 	data.list  - list is filled for ARG_LIST and ARG_NAME options
                  data.list is terminated by a NULL entry
+	data.dvalue - this is used for ARG_DOUBLE options
 
 int arg_count
 	only set for ARG_LIST items; this is set to the number of items in

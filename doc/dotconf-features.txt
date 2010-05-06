@@ -1,5 +1,5 @@
-dot.conf v1.0.0      http://www.azzit.de/dotconf/
-=====================================================================
+dot.conf feature descriptions
+=============================
 
 Builtin Commands
 ================
@@ -18,12 +18,10 @@ Here Documents
     DELIMITER itself on a line. The last newline is stripped of the
     resulting string.
 
-Environmentvariable Substitution
+Environment variable Substitution
 =================================
    dot.conf supports substitution of environment variables including
    default substitution, if the env-var is not set.
    Substitution goes like this: ${NAME:-default}
 
-
-  -- lukas schröder <lukas@azzit.de>
 
