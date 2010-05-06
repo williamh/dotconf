@@ -25,7 +25,9 @@ int main(int argc, char **argv)
 
 	printf("Reading the configuration with CASE_INSENSITIVE enabled\n");
 
-	configfile = dotconf_create("caseinsensitive.conf", options, 0, CASE_INSENSITIVE);
+	configfile =
+	    dotconf_create("caseinsensitive.conf", options, 0,
+			   CASE_INSENSITIVE);
 	if (dotconf_command_loop(configfile) == 0)
 		fprintf(stderr, "Error reading config file\n");
 	dotconf_cleanup(configfile);

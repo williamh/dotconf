@@ -20,11 +20,10 @@ static configoption_t options[] = {
 	LAST_OPTION
 };
 
-
 void readit(int flags)
 {
 	configfile_t *configfile;
-	
+
 	configfile = dotconf_create("noinline.conf", options, 0, flags);
 	if (!dotconf_command_loop(configfile))
 		fprintf(stderr, "Error reading config file\n");

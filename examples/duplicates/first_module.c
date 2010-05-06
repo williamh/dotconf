@@ -3,15 +3,14 @@
 
 static DOTCONF_CB(cb_newoption)
 {
-   printf(
-      "[FIRST_MODULE] Line %ld: Option=%s str=%s context=%ld\n",
-      cmd->configfile->line, cmd->name, cmd->data.str, cmd->option->context);
-  return NULL;
+	printf("[FIRST_MODULE] Line %ld: Option=%s str=%s context=%ld\n",
+	       cmd->configfile->line, cmd->name, cmd->data.str,
+	       cmd->option->context);
+	return NULL;
 }
 
-configoption_t options[] =
-{
-   {  "DupOption",   ARG_STR, cb_newoption,  0, 0  },
-   LAST_OPTION
+configoption_t options[] = {
+	{"DupOption", ARG_STR, cb_newoption, 0, 0}
+	,
+	LAST_OPTION
 };
-

@@ -58,30 +58,27 @@ static const char libpool_version[] = LIBPOOL_VERSION;
 
 */
 
-
 /* memory allocation code */
 #undef malloc
 #undef free
 
-typedef struct sub_pool    sub_pool;
-struct pool
-{
-      /* num of bytes allocated with reference to this pool
-         note: this element is not maintained during free's !
-       */
-  unsigned long size;
+typedef struct sub_pool sub_pool;
+struct pool {
+	/* num of bytes allocated with reference to this pool
+	   note: this element is not maintained during free's !
+	 */
+	unsigned long size;
 
-      /* list of allocated pointers */
-  void *pointers;
+	/* list of allocated pointers */
+	void *pointers;
 
-  sub_pool *sub_pools;                 /* sub pools */
-  struct pool *parent;
+	sub_pool *sub_pools;	/* sub pools */
+	struct pool *parent;
 };
 
-struct sub_pool
-{
-  void *base;
-  struct pool *pool;
+struct sub_pool {
+	void *base;
+	struct pool *pool;
 };
 
   /* the size needed at the beginning of ->pointers to
@@ -89,168 +86,159 @@ struct sub_pool
    */
 #define ALLOC_HDR_SIZE    (sizeof(void *))
 
-
 /* acquire a new pool */
 struct pool *pool_new(struct pool *p)
 {
-  void *acquired;
-  struct pool *pool;
-  int size = sizeof(struct pool) + ALLOC_HDR_SIZE;
+	void *acquired;
+	struct pool *pool;
+	int size = sizeof(struct pool) + ALLOC_HDR_SIZE;
 
-  acquired = malloc(size);
-  memset(acquired, 0, size);
+	acquired = malloc(size);
+	memset(acquired, 0, size);
 
-  /* a pool is 'acquired' at the beginning of it's own ->pointers */
-  *(void **)acquired = 0;
-  pool = (struct pool *)((unsigned long)acquired + ALLOC_HDR_SIZE);
-  memset(pool, 0, sizeof(struct pool));
+	/* a pool is 'acquired' at the beginning of it's own ->pointers */
+	*(void **)acquired = 0;
+	pool = (struct pool *)((unsigned long)acquired + ALLOC_HDR_SIZE);
+	memset(pool, 0, sizeof(struct pool));
 
-  pool->parent = p;
-  pool->sub_pools = 0;
-  pool->pointers = acquired;
+	pool->parent = p;
+	pool->sub_pools = 0;
+	pool->pointers = acquired;
 
-  if (pool->parent)
-  {
-    sub_pool *subpool = pool_calloc(pool->parent, sizeof(sub_pool));
-    subpool->pool = pool;
-    *(sub_pool **)subpool = pool->parent->sub_pools;
-    pool->parent->sub_pools = subpool;
-  }
+	if (pool->parent) {
+		sub_pool *subpool = pool_calloc(pool->parent, sizeof(sub_pool));
+		subpool->pool = pool;
+		*(sub_pool **) subpool = pool->parent->sub_pools;
+		pool->parent->sub_pools = subpool;
+	}
 
-  return pool;
+	return pool;
 }
 
 /* free a pool and all subpools */
 void pool_free(struct pool *pool)
 {
-  void *n, *c;     /* next and current */
+	void *n, *c;		/* next and current */
 
-  if (!pool)
-    return;        /* somebody fucks around */
+	if (!pool)
+		return;		/* somebody fucks around */
 
+	if (pool->parent && pool->parent->sub_pools) {
+		sub_pool *s_pool, *ps_pool;	/* previous and current */
 
-  if (pool->parent && pool->parent->sub_pools)
-  {
-    sub_pool *s_pool, *ps_pool;					/* previous and current */
+		/* find the pointer to pool in the parent's subpool list and it's ancestor */
+		for (ps_pool = s_pool = pool->parent->sub_pools;
+		     s_pool && s_pool->pool != pool;
+		     ps_pool = s_pool, s_pool = s_pool->base) ;
 
-    /* find the pointer to pool in the parent's subpool list and it's ancestor */
-    for (ps_pool = s_pool = pool->parent->sub_pools ;
-         s_pool && s_pool->pool != pool ;
-         ps_pool = s_pool, s_pool = s_pool->base) ;
+		if (ps_pool == s_pool && !s_pool->base)	/* remove last sub_pool */
+			pool->parent->sub_pools = 0;
+		else if (ps_pool == s_pool && s_pool->base)	/* replace root node */
+			pool->parent->sub_pools = s_pool->base;
+		else if (ps_pool && s_pool)	/* remove man-in-the-middle */
+			ps_pool->base = s_pool->base;
 
-    if (ps_pool == s_pool && !s_pool->base)     /* remove last sub_pool */
-      pool->parent->sub_pools = 0;
-    else if (ps_pool == s_pool && s_pool->base) /* replace root node */
-      pool->parent->sub_pools = s_pool->base;
-    else if (ps_pool && s_pool)                 /* remove man-in-the-middle */
-      ps_pool->base = s_pool->base;
+	}
 
-  }
+	/* free up the sub_pools recursively */
+	for (c = pool->sub_pools; c; c = n) {
+		n = *(void **)c;
+		pool_free(((sub_pool *) c)->pool);
+	}
 
-  /* free up the sub_pools recursively */
-  for ( c = pool->sub_pools; c; c = n)
-  {
-    n = *(void **)c;
-    pool_free( ((sub_pool *)c)->pool );
-  }
-
-  /* free all pointers listed in ->pointers;
-   * the last pointer free'd is the pool itself
-   */
-  for (c = pool->pointers; c; c = n)
-  {
-    n = *(void **)c;
-    free(c);
-  }
+	/* free all pointers listed in ->pointers;
+	 * the last pointer free'd is the pool itself
+	 */
+	for (c = pool->pointers; c; c = n) {
+		n = *(void **)c;
+		free(c);
+	}
 
 }
 
-
 void *pool_alloc(struct pool *pool, int size)
 {
-  void *ptr;
+	void *ptr;
 
-  if (!pool)
-  {
-    fprintf(stderr, "Hey, fuckhead, gimme a pool if you want memory!\n");
-    exit (1);
-  }
+	if (!pool) {
+		fprintf(stderr,
+			"Hey, fuckhead, gimme a pool if you want memory!\n");
+		exit(1);
+	}
 
-  size += ALLOC_HDR_SIZE;
-  pool->size += size;
-  ptr = malloc(size);
-  if (!ptr)
-  {
-    fprintf(stderr, "Ouch...out of memory\n");
-    exit(1);
-  }
+	size += ALLOC_HDR_SIZE;
+	pool->size += size;
+	ptr = malloc(size);
+	if (!ptr) {
+		fprintf(stderr, "Ouch...out of memory\n");
+		exit(1);
+	}
 
-  memset(ptr, 0, size);
-  *(void **)ptr = pool->pointers;
-  pool->pointers = ptr;
+	memset(ptr, 0, size);
+	*(void **)ptr = pool->pointers;
+	pool->pointers = ptr;
 
-  return (void *)((unsigned long)ptr + ALLOC_HDR_SIZE);
+	return (void *)((unsigned long)ptr + ALLOC_HDR_SIZE);
 }
 
 void *pool_calloc(struct pool *pool, int size)
 {
-  void *acquired;
+	void *acquired;
 
-  acquired = pool_alloc(pool, size);
-  memset(acquired, 0, size);
+	acquired = pool_alloc(pool, size);
+	memset(acquired, 0, size);
 
-  return acquired;
+	return acquired;
 }
 
    /* all '...' MUST be char* */
 char *pool_strcat(struct pool *pool, ...)
 {
-  va_list args;
-  int size;
-  char *str, *result, *cp;
+	va_list args;
+	int size;
+	char *str, *result, *cp;
 
-  va_start(args, pool);
-  /* get the length of all string to know how much memory to allocate */
-  for (size = 0; (str = va_arg(args, char *)); )
-    size += strlen(str);
-  va_end(args);
+	va_start(args, pool);
+	/* get the length of all string to know how much memory to allocate */
+	for (size = 0; (str = va_arg(args, char *));)
+		size += strlen(str);
+	va_end(args);
 
-  result = pool_alloc(pool, size + 1);
+	result = pool_alloc(pool, size + 1);
 
-  cp = result;
-  *cp = 0;
+	cp = result;
+	*cp = 0;
 
-  /* now start copying every string onto the end of result */
-  va_start(args, pool);
-  while ( (str = va_arg(args, char *)) )
-  {
-    strcpy(cp, str);
-    cp += strlen(str);
-  }
-  va_end(args);
+	/* now start copying every string onto the end of result */
+	va_start(args, pool);
+	while ((str = va_arg(args, char *))) {
+		strcpy(cp, str);
+		cp += strlen(str);
+	}
+	va_end(args);
 
-  return result;
+	return result;
 }
 
 char *pool_strdup(struct pool *pool, const char *str)
 {
-  char *res;
+	char *res;
 
-  res = pool_alloc(pool, strlen(str)+1);
-  strcpy(res, str);
+	res = pool_alloc(pool, strlen(str) + 1);
+	strcpy(res, str);
 
-  return res;
+	return res;
 }
 
 char *pool_strndup(struct pool *pool, const char *str, int n)
 {
-  char *res;
+	char *res;
 
-  res = pool_alloc(pool, n+1);
-  strncpy(res, str, n);
-  *(res+n) = 0;
+	res = pool_alloc(pool, n + 1);
+	strncpy(res, str, n);
+	*(res + n) = 0;
 
-  return res;
+	return res;
 }
 
 char *pool_sprintf(struct pool *pool, const char *fmt, ...)
@@ -265,4 +253,3 @@ char *pool_sprintf(struct pool *pool, const char *fmt, ...)
 
 	return pool_strdup(pool, buffer);
 }
-
