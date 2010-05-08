@@ -56,11 +56,3 @@ AC_CONFIG_FILES([Makefile
                  dotconf.pc
                  dotconf.spec])
 AC_OUTPUT
-
-echo
-echo
-echo \-\*\- dot.conf $VERSION \-\*\-
-echo
-echo configure complete, now type \'make\'
-echo
-
