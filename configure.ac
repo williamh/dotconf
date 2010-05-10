@@ -54,6 +54,5 @@ AC_CONFIG_FILES([Makefile
                  doc/Makefile
                  doc/examples/Makefile
                  src/Makefile
-                 dotconf.pc
-                 dotconf.spec])
+                 dotconf.pc])
 AC_OUTPUT
