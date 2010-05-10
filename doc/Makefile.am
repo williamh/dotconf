@@ -1,5 +1,6 @@
 
-dist_doc_DATA = dotconf-features.txt dotconf-api.txt
+SUBDIRS = examples
 
-EXTRA_DIST = examples
+
+dist_doc_DATA = dotconf-features.txt dotconf-api.txt
 

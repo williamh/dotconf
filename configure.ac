@@ -52,6 +52,7 @@ AC_CHECK_FUNCS([memset strcspn strdup strstr])
 
 AC_CONFIG_FILES([Makefile
                  doc/Makefile
+                 doc/examples/Makefile
                  src/Makefile
                  dotconf.pc
                  dotconf.spec])
