@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 /* this example does not work for WIN32 */
@@ -40,6 +41,7 @@ int main(int argc, char **argv)
 	configfile_t *configfile;
 
 	memset(handles, 0, sizeof(handles));
+	putenv("TESTUSER=lukas");
 
 	/*
 	 * start reading config, CASE_INSENSITIVE (specify NONE or 0 for the
