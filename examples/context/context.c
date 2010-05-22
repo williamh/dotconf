@@ -106,7 +106,7 @@ int main(void)
 			   CASE_INSENSITIVE);
 	if (!configfile) {
 		fprintf(stderr, "Error opening configuration file\n");
-		exit(1);
+		return 1;
 	}
 	configfile->errorhandler = (dotconf_errorhandler_t) error_handler;
 	configfile->contextchecker = (dotconf_contextchecker_t) context_checker;

@@ -76,15 +76,14 @@ FUNC_ERRORHANDLER(error_handler)
 	return 0;
 }
 
-int main(int argc, char *argv[]
-    )
+int main(int argc, char *argv[])
 {
 	configfile_t *configfile;
 	struct config_context context;
 
 	if (argc < 2) {
 		fprintf(stderr, "Usage : %s <configfile>\n", argv[0]);
-		exit(1);
+		return 1;
 	}
 	context.current_end_token[0] = '\0';
 	context.current_context = 0;
@@ -99,14 +98,14 @@ int main(int argc, char *argv[]
 				    CASE_INSENSITIVE | DUPLICATE_OPTION_NAMES);
 	if (!configfile) {
 		fprintf(stderr, "Error opening configuration file\n");
-		exit(1);
+		return 1;
 	}
 	configfile->errorhandler = (dotconf_errorhandler_t) error_handler;
 	configfile->contextchecker = (dotconf_contextchecker_t) context_checker;
 
 	if (dotconf_command_loop(configfile) == 0) {
 		fprintf(stderr, "Error reading configuration file\n");
-		exit(1);
+		return 1;
 	}
 
 	dotconf_cleanup(configfile);
