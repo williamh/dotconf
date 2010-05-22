@@ -3,9 +3,8 @@
 
 static DOTCONF_CB(cb_newoption)
 {
-	printf("[SECOND_MODULE] Line %ld: Option=%s int=%ld context=%ld\n",
-	       cmd->configfile->line, cmd->name, cmd->data.value,
-	       cmd->option->context);
+	printf("[SECOND_MODULE] Line %ld: Option=%s int=%ld\n",
+	       cmd->configfile->line, cmd->name, cmd->data.value);
 	return NULL;
 }
 
