@@ -1,6 +1,0 @@
-addmodule_option : Option AddModule called
-Successfully loaded module first_module (first_module)
-addmodule_option : Option AddModule called
-Successfully loaded module second_module (second_module)
-[FIRST_MODULE] Line 9: Option=DupOption str=text context=134524672
-[SECOND_MODULE] Line 13: Option=DupOption int=16 context=134525560
