@@ -4,7 +4,7 @@ OBJS=context.o
 #######################
 CFLAGS=-Wall -O2
 LDFLAGS=
-LIBS=`dotconf-config --libs` ../libpool/libpool.a
+LIBS=`pkg-config dotconf --libs` ../libpool/libpool.a
 CC=gcc
 
 %.o: %.c
