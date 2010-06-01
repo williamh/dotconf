@@ -49,6 +49,14 @@ AC_FUNC_REALLOC
 AC_FUNC_STRTOD
 AC_CHECK_FUNCS([memset strcspn strdup strstr])
 
+# Conditionally set extra compiler flags.
+if test "$GCC" = yes; then
+	WARNING_CFLAGS="-Wall"
+else
+	WARNING_CFLAGS="-errwarn=%all -errtags=yes -erroff=E_STATEMENT_NOT_REACHED"
+fi
+AC_SUBST(WARNING_CFLAGS)
+
 AC_CONFIG_FILES([Makefile
                  dotconf.pc
                  doc/Makefile
