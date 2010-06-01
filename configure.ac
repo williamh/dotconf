@@ -35,7 +35,6 @@ AC_PROG_CC
 AC_PROG_MAKE_SET
 
 # Checks for libraries.
-AC_SEARCH_LIBS([dlopen], [dl])
 
 # Checks for header files.
 AC_CHECK_HEADERS([fcntl.h malloc.h stdlib.h string.h strings.h syslog.h unistd.h])
