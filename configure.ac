@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.63])
-AC_INIT([dotconf], [1.1.0], [w.d.hubbs@gmail.com])
+AC_INIT([dotconf], [1.2], [w.d.hubbs@gmail.com])
 AM_INIT_AUTOMAKE([foreign])
 LT_PREREQ([2.2])
 LT_INIT([dlopen])
