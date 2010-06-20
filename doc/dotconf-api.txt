@@ -130,8 +130,18 @@ unsigned long flags
 
 char *includepath
 	the include-path for dot.conf's internal 'Include' option.
-	This field is set to the value of the CFG_INCLUDEPATH_ENV environment
-	by dotconf_create
+	This field is set by dotconf_create to one of these possibilities in
+	order:
+	- If the variable named by CFG_INCLUDEPATH_ENV is set in the
+	  environment, includepath is set to the value of that variable.
+	- If the name of the configuration file passed to dotconf_create
+	  contains a fully qualified path, includepath is set to that path
+	  without the file name.
+	- If the name of the configuration file passed to dotconf_create
+	  contains a relative path, includepath is set to the fullly
+	  qualified path where the configuration file is stored without the
+	  configuration file name.
+	- Otherwise, includepath is not set.
 
 dotconf_errorhandler_t errorhandler
 	the errorhandler of the app; after creating your configfile_t set this

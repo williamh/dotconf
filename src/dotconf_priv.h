@@ -39,6 +39,10 @@ extern "C" {
 	int dotconf_handle_star(command_t * cmd, char *path, char *pre,
 				char *ext);
 
+char *get_cwd(void);
+
+char *get_path(char *name);
+
 #ifdef __cplusplus
 }				/* extern "C" */
 #endif

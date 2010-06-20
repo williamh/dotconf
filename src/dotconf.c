@@ -774,6 +774,8 @@ configfile_t *dotconf_create(char *fname, const configoption_t * options,
 	char *dc_env = NULL;
 	int registered = 0;
 	configfile_t *new_cfg = calloc(1, sizeof(configfile_t));
+	char *path = NULL;
+	char *cwd = NULL;
 
 	if (!new_cfg)
 		return NULL;
@@ -827,11 +829,30 @@ configfile_t *dotconf_create(char *fname, const configoption_t * options,
 
 	new_cfg->includepath[0] = 0x00;
 
-	/* take includepath from environment if present */
+	/*
+	 * take default includepath from environment if present
+	 * Otherwise, resolve the path of the configuration file and use that
+	 * as default includepath.
+	 */
 	dc_env = getenv(CFG_INCLUDEPATH_ENV);
-	if (dc_env != NULL)
+	if (dc_env != NULL) {
 		snprintf(new_cfg->includepath, CFG_MAX_FILENAME, "%s", dc_env);
-
+	} else {
+		path = get_path(fname);
+		if (path != NULL) {
+			if (path[0] == '/') {
+				snprintf(new_cfg->includepath, CFG_MAX_FILENAME, "%s", path);
+			} else {
+				cwd = get_cwd();
+				if (cwd != NULL) {
+					snprintf(new_cfg->includepath, CFG_MAX_FILENAME,
+						"%s/%s", cwd, path);
+					free(cwd);
+				}
+			}
+			free(path);
+		}
+	}
 	return new_cfg;
 }
 
@@ -1392,6 +1413,39 @@ int dotconf_handle_star(command_t * cmd, char *path, char *pre, char *ext)
 	return 0;
 }
 
+char *get_cwd(void)
+{
+	char *buf = calloc(1, CFG_MAX_FILENAME);
+
+	if (buf == NULL)
+		return NULL;
+	getcwd(buf, CFG_MAX_FILENAME);
+	return buf;
+}
+
+char *get_path(char *name)
+{
+	char *tmp;
+	char *buf = NULL;
+	int len = 0;
+
+	tmp = strrchr(name, '/');
+	if (tmp == NULL)
+		return NULL;
+	buf = calloc(1, CFG_MAX_FILENAME);
+	if (buf == NULL)
+		return NULL;
+	if (tmp == name) {
+		sprintf(buf, "/");
+	} else {
+		len = tmp - name + 1;
+		if (len > CFG_MAX_FILENAME)
+			len -= 1;
+	}
+		snprintf(buf, len, "%s", name);
+	return buf;
+}
+
 /* ------ callbacks of the internal option (Include, IncludePath) ------------------------------- */
 DOTCONF_CB(dotconf_cb_include)
 {
@@ -1487,5 +1541,3 @@ DOTCONF_CB(dotconf_cb_includepath)
 			 cmd->data.str);
 	return NULL;
 }
-
-/* vim:set ts=4: */
