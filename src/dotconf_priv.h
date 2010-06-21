@@ -1,10 +1,6 @@
 #ifndef DOTCONF_PRIV_H
 #define DOTCONF_PRIV_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /* verify whether or not a character is in the WILDCARDS list */
 	int dotconf_is_wild_card(char value);
 
@@ -43,7 +39,4 @@ char *get_cwd(void);
 
 char *get_path(char *name);
 
-#ifdef __cplusplus
-}				/* extern "C" */
 #endif
-#endif				/* DOTCONF_PRIV_H */
