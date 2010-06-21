@@ -3,25 +3,53 @@ dot.conf feature descriptions
 
 Builtin Commands
 ================
-    dot.conf natively has the ability to 'Include' additional configuration
-    files that can be found
-      - relative to the current working directory,
-      - relative to some include path, which can be set using the option
-    	  'IncludePath' or the environment variable DC_INCLUDEPATH
-      - at a fully qualified position (starting with a / )
+
+dot.conf natively has the ability to 'Include' additional configuration
+files that can be found
+
+- relative to a path pointed to by the DC_INCLUDEPATH environment variable if
+  it is set.
+- relative to a path which can be set using the includepath command in a
+  configuration file.
+- at a fully qualified position (starting with a / )
+- Relative to the directory containing the configuration file.
+
+Note that if the name of the configuration file contains no directory
+components, and none of the above cases apply, included files are relative
+to the current working directory.
+
+Use the Include command in your configuration file to include another file,
+and use the IncludePath command to specify the directory from which
+included files are taken. Note that if the user sets DC_INCLUDEPATH in the
+environment, this setting will override the includepath setting.
 
 Here Documents
 ===============
-    dot.conf also supports so-called 'here-documents' as known from
-    the shell or from PERL. this feature can be used for ARG_STR type
-    options. a here-document is initiated by <<DELIMITER and finished by
-    DELIMITER itself on a line. The last newline is stripped of the
-    resulting string.
+
+dot.conf also supports so-called 'here-documents' as known from
+the shell or from PERL. this feature can be used for ARG_STR type
+options. a here-document is initiated by <<DELIMITER and finished by
+DELIMITER itself on a line. The last newline is stripped of the
+resulting string.
 
 Environment variable Substitution
 =================================
-   dot.conf supports substitution of environment variables including
-   default substitution, if the env-var is not set.
-   Substitution goes like this: ${NAME:-default}
 
+dot.conf supports substitution of environment variables.  For example,
+suppose that you have an entry in your configuration file like this one.
+
+UserDir directories/${USER}
+
+The environment variable $USER will be expanded when the configuration
+file is parsed.
+
+dot.conf also allows default substitutions, if the
+environment variable is not set.
+For example, consider the following fragment of a configuration file.
+
+TempDirectory ${TMPDIR:-/tmp}
+
+If the environment variable $TMPDIR is set, then TempDirectory contains the
+value of $TMPDIR.  Otherwise, it contains the string /tmp.
+Note that environment variables are not substituted in here documents.
 
