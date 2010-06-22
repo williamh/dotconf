@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.63])
-AC_INIT([dotconf], [1.2], [w.d.hubbs@gmail.com])
+AC_INIT([dotconf], [1.3], [w.d.hubbs@gmail.com])
 AM_INIT_AUTOMAKE([foreign])
 LT_PREREQ([2.2])
 LT_INIT([dlopen])
@@ -14,7 +14,6 @@ AC_CONFIG_HEADERS([config.h])
 # This is taken from the libtool manual.
 # It is an algorithm, so follow all of the steps.
 #
-# 1. start with 0:0:0 for the first release.
 # 2. Only change this as the last step before a release.
 # 3. If the library source has changed since the last release,
 # increment revision.
@@ -24,7 +23,7 @@ AC_CONFIG_HEADERS([config.h])
 # 6. If any interfaces have been removed since the last release, set age to 0.
 #
 DC_CURRENT=0
-DC_REVISION=0
+DC_REVISION=1
 DC_AGE=0
 AC_SUBST([DC_CURRENT])
 AC_SUBST([DC_REVISION])
