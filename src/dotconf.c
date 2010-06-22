@@ -1440,7 +1440,7 @@ char *get_path(char *name)
 	} else {
 		len = tmp - name + 1;
 		if (len > CFG_MAX_FILENAME)
-			len -= 1;
+			len = CFG_MAX_FILENAME;
 	}
 		snprintf(buf, len, "%s", name);
 	return buf;
