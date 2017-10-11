@@ -1457,6 +1457,13 @@ DOTCONF_CB(dotconf_cb_include)
 	char *pre = 0;
 	char *ext = 0;
 
+	if (!cmd->data.str) {
+		dotconf_warning(cmd->configfile, DCLOG_WARNING,
+				ERR_INCLUDE_ERROR,
+				"Invalid or missing filename");
+		return NULL;
+	}
+
 	if (cmd->configfile->includepath
 	    && cmd->data.str[0] != '/'
 	    && cmd->configfile->includepath[0] != '\0') {
