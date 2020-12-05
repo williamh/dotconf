@@ -768,7 +768,7 @@ void dotconf_cleanup(configfile_t * configfile)
 	free(configfile);
 }
 
-configfile_t *dotconf_create(char *fname, const configoption_t * options,
+configfile_t *dotconf_create(const char *fname, const configoption_t * options,
 			     context_t * context, unsigned long flags)
 {
 	char *dc_env = NULL;
@@ -1423,7 +1423,7 @@ char *get_cwd(void)
 	return buf;
 }
 
-char *get_path(char *name)
+char *get_path(const char *name)
 {
 	char *tmp;
 	char *buf = NULL;

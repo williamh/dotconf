@@ -37,6 +37,6 @@
 
 char *get_cwd(void);
 
-char *get_path(char *name);
+char *get_path(const char *name);
 
 #endif

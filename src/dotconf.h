@@ -176,7 +176,7 @@ extern "C" {
 	};
 
 /* ------ dotconf_create() - create the configfile_t needed for further dot.conf fun ------------ */
-	configfile_t *dotconf_create(char *, const configoption_t *,
+	configfile_t *dotconf_create(const char *, const configoption_t *,
 				     context_t *, unsigned long);
 
 /* ------ dotconf_cleanup() - tidy up behind dotconf_create and the parser dust ----------------- */
