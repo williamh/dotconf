@@ -260,34 +260,48 @@ int dotconf_continue_line(char *buffer, size_t length)
 {
 	/* ------ match [^\\]\\[\r]\n ------------------------------ */
 	char *cp1 = buffer + length - 1;
+	int backtrack = 0;
 
-	if (length < 2)
+	if (length == 0)			/* empty line */
 		return 0;
 
-	if (*cp1-- != '\n')
+	if (*cp1-- != '\n')			/* terminates, no newline */
 		return 0;
 
-	if (*cp1 == '\r')
+	backtrack++;
+
+	if (cp1 < buffer)			/* just newline */
+		return 0;
+
+	if (*cp1 == '\r') {
 		cp1--;
+		backtrack++;
+	}
+
+	if (cp1 < buffer)			/* just carriage return + newline */
+		return 0;
 
 	if (*cp1-- != '\\')
 		return 0;
 
-	cp1[1] = 0;		/* strip escape character and/or newline */
-	return (*cp1 != '\\');
+	backtrack++;
+
+	if (cp1 < buffer || *cp1 != '\\')	/* maybe empty line with just escape */
+		return backtrack;
+
+	return 0;
 }
 
 int dotconf_get_next_line(char *buffer, size_t bufsize,
 			  configfile_t * configfile)
 {
-	char *cp1, *cp2;
-	char buf2[CFG_BUFSIZE];
-	int length;
+	char *cp1, tmp;
+	int length, backtrack;
 
 	if (configfile->eof)
 		return 1;
 
-	cp1 = fgets(buffer, CFG_BUFSIZE, configfile->stream);
+	cp1 = fgets(buffer, bufsize, configfile->stream);
 
 	if (!cp1) {
 		configfile->eof = 1;
@@ -296,9 +310,10 @@ int dotconf_get_next_line(char *buffer, size_t bufsize,
 
 	configfile->line++;
 	length = strlen(cp1);
-	while (dotconf_continue_line(cp1, length)) {
-		cp2 = fgets(buf2, CFG_BUFSIZE, configfile->stream);
-		if (!cp2) {
+	while (length < (bufsize - 1) && (backtrack = dotconf_continue_line_new(buffer, length))) {
+		length -= backtrack;
+		cp1 = fgets(buffer + length, bufsize - length, configfile->stream);
+		if (!cp1) {
 			fprintf(stderr,
 				"[dotconf] Parse error. Unexpected end of file at "
 				"line %ld in file %s\n", configfile->line,
@@ -307,8 +322,7 @@ int dotconf_get_next_line(char *buffer, size_t bufsize,
 			return 1;
 		}
 		configfile->line++;
-		strcpy(cp1 + length - 2, cp2);
-		length = strlen(cp1);
+		length += strlen(cp1);
 	}
 
 	return 0;
