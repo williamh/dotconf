@@ -1,4 +1,4 @@
-dot.conf v1.4
+dot.conf v1.4.1
 
 This file lists changes that break backward compatibility with previous
 versions.  Please see the files in the doc directory of the distribution for
