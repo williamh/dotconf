@@ -295,7 +295,7 @@ int dotconf_continue_line(char *buffer, size_t length)
 int dotconf_get_next_line(char *buffer, size_t bufsize,
 			  configfile_t * configfile)
 {
-	char *cp1, tmp;
+	char *cp1;
 	int length, backtrack;
 
 	if (configfile->eof)
