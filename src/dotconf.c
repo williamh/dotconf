@@ -310,7 +310,7 @@ int dotconf_get_next_line(char *buffer, size_t bufsize,
 
 	configfile->line++;
 	length = strlen(cp1);
-	while (length < (bufsize - 1) && (backtrack = dotconf_continue_line_new(buffer, length))) {
+	while (length < (bufsize - 1) && (backtrack = dotconf_continue_line(buffer, length))) {
 		length -= backtrack;
 		cp1 = fgets(buffer + length, bufsize - length, configfile->stream);
 		if (!cp1) {
